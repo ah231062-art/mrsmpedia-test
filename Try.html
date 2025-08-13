@@ -1,3 +1,4 @@
+
 </html><!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -21,47 +22,16 @@
     #jenisBox ul { padding-left: 1.2em; }
     #jenisBox li { cursor: pointer; margin-bottom: 5px; color: #005e90; }
     #jenisBox li:hover { text-decoration: underline; }
-    .nav-tab {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      background: #f1f1f1;
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-      margin-top: 15px;
-    }
-    .nav-tab button {
-      background: none;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 16px;
-      border-bottom: 3px solid transparent;
-    }
-    .nav-tab button:hover {
-      border-bottom: 3px solid #333;
-    }
-
-    .mrsm-card {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 10px;
-      background: #fff;
-    }
-    </header>
+  </style>
+</head>
+<body>
+  <header>
     <h1>MRSMpedia</h1>
     <p>Pusat Data dan Peta Semua MRSM di Malaysia</p>
   </header>
+
   <div id="searchBox">
     <input id="searchInput" type="search" placeholder="Cari MRSM..." onkeyup="filterMRSM()">
-  </div>
-
- <div class="nav-tab">
-    <button onclick="showTab('utamaTab')">Utama</button>
-    <button onclick="showTab('beritaTab')">Berita Terkini</button>
-    <button onclick="showTab('shoppingTab')">Shopping</button>
   </div>
 
   <div id="jenisBox">
@@ -76,11 +46,66 @@
     </ul>
   </div>
 
-<div id="utamaTab">
-  <h2>Selamat Datang ke MRSMpedia</h2>
-  <p>Pilih mana-mana MRSM untuk melihat maklumat penuh mengenai program, kemudahan dan pencapaian mereka.</p>
+  <div id="results">
+<body>
 
-   <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Alor Gajah', 'Melaka', [
+<!-- Statistik MRSM -->
+<div id="mrsm-stats" style="margin-bottom: 20px; font-weight: bold;">
+  <p>Jumlah MRSM: <span id="jumlah-mrsm"></span></p>
+  <p>Premier: <span id="mrsm-premier"></span></p>
+  <p>Bitara: <span id="mrsm-bitara"></span></p>
+  <p>Ulul Albab: <span id="mrsm-ulul"></span></p>
+  <p>Teknikal: <span id="mrsm-teknikal"></span></p>
+  <p>IGCSE: <span id="mrsm-igcse"></span></p>
+</div>
+
+<!-- Butang A-Z -->
+<div id="alphabetFilter" style="margin-bottom: 20px;">
+  <button onclick="filterByAlphabet('ALL')">Semua</button>
+  <script>
+    const abjad = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    abjad.forEach(h => {
+      document.write(`<button onclick="filterByAlphabet('${h}')">${h}</button>`);
+    });
+  </script>
+</div>
+
+<script>
+  function filterByAlphabet(letter) {
+    const cards = document.querySelectorAll('.mrsm-card');
+    cards.forEach(card => {
+      const name = card.textContent.trim().toUpperCase();
+      if (letter === 'ALL' || name.startsWith('MRSM ' + letter)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function kiraStatistik() {
+    const semua = document.querySelectorAll('.mrsm-card');
+    const premier = document.querySelectorAll('.mrsm-card[data-jenis*="Premier"]');
+    const bitara = document.querySelectorAll('.mrsm-card[data-jenis*="Bitara"]');
+    const ulul = document.querySelectorAll('.mrsm-card[data-jenis*="Ulul Albab"]');
+    const teknikal = document.querySelectorAll('.mrsm-card[data-jenis*="Teknikal"]');
+    const igcse = document.querySelectorAll('.mrsm-card[data-jenis*="IGCSE"]');
+
+    document.getElementById('jumlah-mrsm').innerText = semua.length;
+    document.getElementById('mrsm-premier').innerText = premier.length;
+    document.getElementById('mrsm-bitara').innerText = bitara.length;
+    document.getElementById('mrsm-ulul').innerText = ulul.length;
+    document.getElementById('mrsm-teknikal').innerText = teknikal.length;
+    document.getElementById('mrsm-igcse').innerText = igcse.length;
+  }
+
+  document.addEventListener('DOMContentLoaded', kiraStatistik);
+</script>
+
+  <header>...</header>
+  <div id="results">...
+    <!-- Sedia ada -->
+    <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Alor Gajah', 'Melaka', [
   'Program IGCSE',
   'Sejarah: Ditubuhkan pada tahun 2002 untuk memperkasakan pendidikan menengah sains dan teknologi di Melaka.',
   'Kemudahan: Asrama, makmal ICT, makmal sains, pusat sumber, padang serbaguna, surau, dewan terbuka.',
@@ -770,48 +795,6 @@
   <h3>MRSM Kepala Batas (Ulul Albab)</h3>
   <p>Negeri: Pulau Pinang</p>
 </div>
- <<div id="beritaTab" style="display:none;">
-  <h2>Berita Terkini</h2>
-  <ul>
-    <li><strong>6 Ogos 2025:</strong> MRSM Kuala Krai memenangi Anugerah Inovasi STEM Kebangsaan.</li>
-    <li><strong>5 Ogos 2025:</strong> Pelajar MRSM Kepala Batas sertai Program Pertukaran Pelajar ke Jepun.</li>
-    <li><strong>4 Ogos 2025:</strong> MRSM Serting berjaya lahirkan pelajar 12A dalam SPM 2024.</li>
-  </ul>
-</div>
-
-<div id="shoppingTab" style="display:none;">
-  <h2>Kedai MRSMpedia</h2>
-  <div class="shopping-item">
-    <h4>Baju-T MRSMpedia</h4>
-    <p>RM30.00</p>
-    <button>Tambah ke Troli</button>
-  </div>
-  <div class="shopping-item">
-    <h4>Lencana Koleksi MRSM</h4>
-    <p>RM10.00</p>
-    <button>Tambah ke Troli</button>
-  </div>
-  <div class="shopping-item">
-    <h4>Fail Pelajar MRSM</h4>
-    <p>RM5.00</p>
-    <button>Tambah ke Troli</button>
-  </div>
-</div>
-
-  <!-- Script tab control -->
-  <script>
-    function showTab(tabName) {
-      document.getElementById('utamaTab').style.display = 'none';
-      document.getElementById('beritaTab').style.display = 'none';
-      document.getElementById('shoppingTab').style.display = 'none';
-      document.getElementById(tabName).style.display = 'block';
-    }
-
-    window.onload = function() {
-      showTab('utamaTab'); // Papar tab utama dahulu
-    };
-  </script>
-</body>
 
   <div id="mrsmModal" class="modal">
     <div class="modal-content">
@@ -858,6 +841,5 @@
         card.style.display = jenisAttr.includes(jenis) ? 'block' : 'none';
       });
     }
-  </script>
- 
-  </script>
+  </script> 
+  <body/>
