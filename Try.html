@@ -1,0 +1,863 @@
+</html><!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MRSMpedia</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: linear-gradient(to right, #ffffff, #ffcccb, #fff68f); }
+    header { background-color: #005e90; color: white; padding: 1em; text-align: center; position: relative; }
+    #searchBox { margin: 1em auto; text-align: center; }
+    #searchInput { padding: 0.5em; width: 50%; }
+    #results { display: flex; flex-wrap: wrap; justify-content: center; padding: 1em; gap: 2em; }
+    .mrsm-card { border: 1px solid #ddd; padding: 1em; border-radius: 8px; width: 300px; cursor: pointer; transition: box-shadow 0.3s; background-color: #fff; }
+    .mrsm-card:hover { box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+    .map-embed { width: 100%; height: 200px; border: none; border-radius: 8px; margin-top: 1em; }
+    .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
+    .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 700px; position: relative; }
+    .close { position: absolute; top: 10px; right: 20px; color: #aaa; font-size: 28px; cursor: pointer; }
+    .close:hover { color: black; }
+    #jenisBox { position: fixed; top: 20px; right: 20px; background: white; padding: 1em; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 101; }
+    #jenisBox ul { padding-left: 1.2em; }
+    #jenisBox li { cursor: pointer; margin-bottom: 5px; color: #005e90; }
+    #jenisBox li:hover { text-decoration: underline; }
+    .nav-tab {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background: #f1f1f1;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      margin-top: 15px;
+    }
+    .nav-tab button {
+      background: none;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      border-bottom: 3px solid transparent;
+    }
+    .nav-tab button:hover {
+      border-bottom: 3px solid #333;
+    }
+
+    .mrsm-card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px;
+      background: #fff;
+    }
+    </header>
+    <h1>MRSMpedia</h1>
+    <p>Pusat Data dan Peta Semua MRSM di Malaysia</p>
+  </header>
+  <div id="searchBox">
+    <input id="searchInput" type="search" placeholder="Cari MRSM..." onkeyup="filterMRSM()">
+  </div>
+
+ <div class="nav-tab">
+    <button onclick="showTab('utamaTab')">Utama</button>
+    <button onclick="showTab('beritaTab')">Berita Terkini</button>
+    <button onclick="showTab('shoppingTab')">Shopping</button>
+  </div>
+
+  <div id="jenisBox">
+    <h3>Jenis-Jenis MRSM</h3>
+    <ul>
+      <li onclick="filterJenis('Premier')">MRSM Premier</li>
+      <li onclick="filterJenis('Ulul Albab')">MRSM Ulul Albab</li>
+      <li onclick="filterJenis('Teknikal')">MRSM Teknikal</li>
+      <li onclick="filterJenis('IGCSE')">MRSM IGCSE</li>
+      <li onclick="filterJenis('Bitara')">MRSM Bitara</li>
+      <li onclick="filterJenis('Semua Mrsm')">Semua MRSM</li>
+    </ul>
+  </div>
+
+<div id="utamaTab">
+  <h2>Selamat Datang ke MRSMpedia</h2>
+  <p>Pilih mana-mana MRSM untuk melihat maklumat penuh mengenai program, kemudahan dan pencapaian mereka.</p>
+
+   <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Alor Gajah', 'Melaka', [
+  'Program IGCSE',
+  'Sejarah: Ditubuhkan pada tahun 2002 untuk memperkasakan pendidikan menengah sains dan teknologi di Melaka.',
+  'Kemudahan: Asrama, makmal ICT, makmal sains, pusat sumber, padang serbaguna, surau, dewan terbuka.',
+  'Subjek Ditawarkan: Matematik Tambahan, Fizik, Kimia, Biologi, Teknologi Maklumat, Pendidikan Islam.',
+  'Kehebatan: Juara debat MARA Zon Selatan, aktif dalam inovasi dan rekacipta pelajar.',
+  'Penghargaan: Anugerah Sekolah Cemerlang MARA 2021, Finalis Pertandingan Inovasi STEM Kebangsaan.'
+], '2.406788, 102.160456')">
+  <h3>MRSM Alor Gajah</h3>
+  <p>Negeri: Melaka</p>
+</div>
+
+   <div class="mrsm-card" data-jenis="Bitara,Semua Mrsm" onclick="openModal('Pengkalan Chepa', 'Kelantan', [
+  'Program Bitara',
+  'Sejarah: Antara MRSM terawal di Kelantan, terkenal dengan pencapaian akademik tinggi sejak penubuhannya.',
+  'Kemudahan: Asrama lengkap, makmal inovasi, pusat STEM, dewan besar, kemudahan sukan.',
+  'Subjek Ditawarkan: Sains Tulen, Matematik Tambahan, Bahasa Arab Komunikasi, Teknologi Maklumat.',
+  'Kehebatan: Aktif dalam penyelidikan pelajar, projek sains, dan forum antarabangsa.',
+  'Penghargaan: Johan Pertandingan Rekacipta MARA Peringkat Kebangsaan, Sekolah Berprestasi Tinggi 2022.'
+], '6.156455,102.294598')">
+  <h3>MRSM Pengkalan Chepa</h3>
+  <p>Negeri: Kelantan</p>
+</div>
+
+
+  <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Kuantan', 'Pahang', [
+  'Program IGCSE',
+  'Sejarah: MRSM Kuantan terkenal sebagai pusat pelaksanaan kurikulum antarabangsa IGCSE dalam sistem MARA.',
+  'Kemudahan: Smart class, makmal bahasa, makmal sains antarabangsa, bilik muzik, gimnasium.',
+  'Subjek Ditawarkan: English Language, Biology, Chemistry, Physics, Additional Maths, ICT.',
+  'Kehebatan: Pelajar diterima masuk ke universiti luar negara, wakil Malaysia dalam olimpiad antarabangsa.',
+  'Penghargaan: Cambridge High Achiever Award, MARA International Excellence Award 2023.'
+], '3.821932,103.352577')">
+  <h3>MRSM Kuantan</h3>
+  <p>Negeri: Pahang</p>
+</div>
+
+
+   <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Sultan Azlan Syah', 'Perak', [
+  'Program Premier',
+  'Sejarah: Ditubuhkan sebagai MRSM Ulul Albab pertama di Perak dengan kombinasi akademik dan hafazan al-Quran.',
+  'Kemudahan: Kompleks tahfiz, surau besar, asrama, makmal komputer dan kemudahan sukan moden.',
+  'Subjek Ditawarkan: Tahfiz Al-Quran, Sains Tulen, Matematik Tambahan, Pendidikan Islam, Bahasa Arab.',
+  'Kehebatan: Ramai pelajar berjaya hafaz 30 juzuk sebelum tingkatan 5, serta cemerlang akademik.',
+  'Penghargaan: Anugerah Sekolah Integrasi Islam Cemerlang, Hafazan Terbaik MARA peringkat kebangsaan.'
+], ' 4.857722 N, 100.901615 E')">
+  <h3>MRSM Kuala Kangsar</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+   <div class="mrsm-card" data-jenis="Bitara,Semua Mrsm" onclick="openModal('Tun Ghafar Baba', 'Melaka', [
+  'Program Bitara',
+  'Sejarah: Dibuka pada tahun 1981 dan dinamakan MRSM Tun Ghafar Baba pada Julai 2006 selepas ulang tahun ke‑25.',
+  'Kemudahan: Asrama, makmal sains & komputer, dewan kuliah, perpustakaan, pusat kokurikulum.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Tulen, Fizik, Kimia, Biologi, ICT.',
+  'Kehebatan: Pelajar konsisten cemerlang SPM; top 5 MRSM kebangsaan.',
+  'Penghargaan: Anugerah Sekolah Cemerlang MARA; pencapaian 100 % A+ dalam peperiksaan SPM.'
+], '2.301847, 102.437823')">
+  <h3>MRSM Tun Ghafar Baba</h3>
+  <p>Negeri: Melaka</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Tun Abdul Razak', 'Pahang', [
+  'Program IGCSE',
+  'Sejarah: MRSM Tun Abdul Razak di Pekan, Pahang, ditubuhkan sebagai salah satu MRSM Premier yang tertumpu kepada akademik dan STEM.',
+  'Kemudahan: Asrama, makmal sains dan komputer, perpustakaan, padang sukan, dewan besar, bilik diskusi.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Tulen, Fizik, Kimia, Biologi, ICT.',
+  'Kehebatan: Pelajar sering cemerlang dalam sains & matematik; ramai diterima di universiti terkemuka.',
+  'Penghargaan: Sekolah Cemerlang MARA, penerima anugerah kecemerlangan akademik MARA.'
+], '3.556566, 103.388948')">
+  <h3>MRSM Tun Abdul Razak</h3>
+  <p>Negeri: Pahang</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Tun Dr Ismail', 'Johor', [
+  'Program Premier',
+  'Sejarah: Terkenal sebagai MRSM yang melaksanakan kurikulum IGCSE sejak awal di Johor.',
+  'Kemudahan: Kelas pintar, makmal sains & bahasa, perpustakaan, padang bermain, asrama moden.',
+  'Subjek Ditawarkan: English Language, Biology, Chemistry, Physics, Additional Maths, ICT.',
+  'Kehebatan: Pelajar berjaya sambung pelajaran di luar negara; aktif dalam debat dan kokurikulum.',
+  'Penghargaan: Anugerah Akademik MARA, naib juara peringkat negeri dan kebangsaan.'
+], '1.611292, 103.315914')">
+  <h3>MRSM Tun Dr Ismail</h3>
+  <p>Negeri: Johor</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Langkawi', 'Kedah', [
+  '1GCSE',
+  'Sejarah: MRSM Langkawi adalah MRSM ke‑25, diasaskan bagi memperkukuh pendidikan STEM di pulau pelancongan.',
+  'Kemudahan: Asrama, makmal inovasi, pusat sumber, makmal bahasa, dewan serbaguna, padang sukan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, Bahasa Inggeris Tinggi, ICT, Bahasa Arab.',
+  'Kehebatan: Aktif dalam projek alam sekitar dan kelestarian pulau; kejayaan debat dan STEM.',
+  'Penghargaan: Anugerah Sekolah Hijau Negeri, Anugerah Industri Kreatif MARA.'
+], '6.339994, 99.866087')">
+  <h3>MRSM Langkawi</h3>
+  <p>Negeri: Kedah</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Besut', 'Terengganu', [
+  'Program Premier',
+  'Sejarah: MRSM Besut menonjol sebagai institusi Ulul Albab di Terengganu yang menggabungkan hafazan Al‑Quran dan akademik.',
+  'Kemudahan: Kompleks tahfiz, asrama, surau, makmal komputer & sains, dewan serbaguna, padang sukan.',
+  'Subjek Ditawarkan: Tahfiz Al-Quran, Matematik Tambahan, Sains, Bahasa Arab, ICT.',
+  'Kehebatan: Ramai pelajar menghafal 30 juzuk sebelum Tingkatan 5, cemerlang akademik dan spiritual.',
+  'Penghargaan: Anugerah Integrasi Islam MARA, pencapaian hafazan terbaik zon timur.'
+], '5.780778, 102.583195')">
+  <h3>MRSM Besut</h3>
+  <p>Negeri: Terengganu</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Bitara,Semua Mrsm" onclick="openModal('Taiping', 'Perak', [
+  'Program Bitara',
+  'Sejarah: MRSM Taiping ditubuhkan pada 1 Julai 1983 dan menjadi antara MRSM PKP terawal.',
+  'Kemudahan: Asrama, makmal sains & komputer, perpustakaan, padang sukan, dewan terbuka.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Tulen, Fizik, Kimia, Biologi, ICT.',
+  'Kehebatan: Sentiasa dalam kelompok 5 terbaik MRSM kebangsaan dan diiktiraf sebagai Apple Distinguished School.',
+  'Penghargaan: Kerap menduduki ranking SPM tertinggi serta pencapaian global dalam STEM & inovasi.'
+], '4.863332, 100.758310')">
+  <h3>MRSM Taiping</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+   <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Balik Pulau', 'Pulau Pinang', [
+  'Program Premier',
+  'Sejarah: Dirasmikan pada tahun 1982, menjadi salah satu MRSM utama di Pulau Pinang.',
+  'Kemudahan: Asrama, makmal sains & komputer, perpustakaan, padang serbaguna, surau.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, ICT, Bahasa Arab, Pendidikan Islam.',
+  'Kehebatan: Pelajar aktif dalam inovasi STEM dan kokurikulum negeri dan kebangsaan.',
+  'Penghargaan: Johan pertandingan sains kebangsaan dan Anugerah Sekolah Cemerlang MARA.'
+], '5.330873, 100.225584')">
+  <h3>MRSM Balik Pulau</h3>
+  <p>Negeri: Pulau Pinang</p>
+</div>
+   
+   <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Beseri', 'Perlis', [
+  'Program Premier',
+  'Sejarah: Ditubuhkan pada tahun 1985 sebagai MRSM di Perlis untuk memperkembangkan pendidikan sains.',
+  'Kemudahan: Asrama, makmal sains & komputer, dewan kuliah, padang sukan, pusat sumber.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, ICT, Bahasa Inggeris Tinggi.',
+  'Kehebatan: Pelajar cemerlang dalam SPM dan aktiviti STEM peringkat negeri.',
+  'Penghargaan: Sekolah Berprestasi Tinggi MARA dan Anugerah Prestasi Pendidikan Perlis.'
+], '6.551369,100.230703')">
+  <h3>MRSM Beseri</h3>
+  <p>Negeri: Perlis</p>
+</div>
+
+   
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Kuala Berang', 'Terengganu', [
+  'Program Premier',
+  'Sejarah: MRSM Kuala Berang dirasmikan pada tahun 1987, menumpu kepada STEM dan pembangunan modal insan.',
+  'Kemudahan: Asrama, makmal sains & ICT, perpustakaan, padang sukan, surau, dewan besar.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Tulen, ICT, Bahasa Arab.',
+  'Kehebatan: Pelajar konsisten cemerlang di dalam akademik dan kokurikulum negeri & kebangsaan.',
+  'Penghargaan: Penerima Anugerah Pencapaian Akademik MARA & Anugerah Kokurikulum Negeri.'
+], '5.077556, 102.977620')">
+  <h3>MRSM Kuala Berang</h3>
+  <p>Negeri: Terengganu</p>
+</div>
+
+ <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Pasir Tumboh', 'Kelantan', [
+  'Program Premier',
+  'Sejarah: MRSM Pasir Tumboh ditubuhkan pada tahun 1987 sebagai salah satu MRSM utama di Kelantan.',
+  'Kemudahan: Asrama, makmal sains & komputer, dewan besar, padang sukan, pusat STEM.',
+  'Subjek Ditawarkan: Sains Tulen, Matematik Tambahan, Bahasa Arab Komunikasi, ICT.',
+  'Kehebatan: Pelajar cemerlang SPM dan juara dalam pertandingan inovasi dan akademik.',
+  'Penghargaan: Sekolah Berprestasi Tinggi MARA dan pemenang pertandingan kebangsaan.'
+], '6.056791, 102.283260')">
+  <h3>MRSM Pasir Tumboh</h3>
+  <p>Negeri: Kelantan</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Muadzam Shah', 'Pahang', [
+  'Program Premier',
+  'Sejarah: MRSM Muadzam Shah ditubuhkan sekitar tahun 1983 dan terkenal dalam bidang STEM dan akademik.',
+  'Kemudahan: Asrama, makmal sains & komputer, perpustakaan, dewan kuliah, padang sukan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Tebagai, ICT, Bahasa Inggeris, Bahasa Arab.',
+  'Kehebatan: Konsisten cemerlang dalam SPM dan aktiviti inovasi pelajar.',
+  'Penghargaan: Anugerah Sekolah Cemerlang MARA dan pencapaian akademik peringkat kebangsaan.'
+], '3.058962, 103.078789')">
+  <h3>MRSM Muadzam Shah</h3>
+  <p>Negeri: Pahang</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('Tun Ghazali Shafie', 'Sabah', [
+  'Program Ulul Albab',
+  'Sejarah: Dinamakan sempena Tun Ghazali Shafie; antara MRSM utama di Sabah ditubuhkan pada 2013.',
+  'Kemudahan: Asrama, makmal sains & komputer, perpustakaan, dewan kuliah, padang sukan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, ICT, Bahasa Inggeris, Pendidikan Islam.',
+  'Kehebatan: Menonjol dalam akademik dan kokurikulum di wilayah timur Malaysia.',
+  'Penghargaan: Anugerah Sekolah Cemerlang MARA negeri & prestasi akademik tinggi.'
+], '4.171045, 102.100903')">
+  <h3>MRSM Tun Ghazali Shafie</h3>
+  <p>Negeri: Sabah</p>
+</div>
+ 
+  <div class="mrsm-card" data-jenis="Teknikal,Semua Mrsm" onclick="openModal('Bentong', 'Pahang', [
+  'Program Teknikal',
+  'Sejarah: MRSM Bentong mula dibuka sekitar tahun 2009, fokus kepada pendidikan teknikal & vokasional.',
+  'Kemudahan: Bengkel kejuruteraan, makmal teknologi, asrama, padang & dewan besar.',
+  'Subjek Ditawarkan: Lukisan Kejuruteraan, Elektrik, Komputer, Matematik Tambahan.',
+  'Kehebatan: Aktif dalam pertandingan robotik, reka cipta dan kejuruteraan remaja.',
+  'Penghargaan: Anugerah Vokasional & Inovasi MARA peringkat negeri & kebangsaan.'
+], '3.474914, 101.911749')">
+  <h3>MRSM Bentong</h3>
+  <p>Negeri: Pahang</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('Gemencheh', 'Negeri Sembilan', [
+  'Program Ulul Albab',
+  'Sejarah: MRSM Gemencheh dibuka sekitar tahun 2007, bertujuan memperkukuh pendidikan sains di kawasan NS.',
+  'Kemudahan: Asrama, makmal sains & komputer, dewan kuliah, padang sukan, pusat sumber.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, ICT, Bahasa Inggeris, Pendidikan Islam.',
+  'Kehebatan: Pelajar aktif dalam akademik dan kokurikulum; inovasi dan STEM.',
+  'Penghargaan: Anugerah Sekolah Berprestasi Tinggi dan pencapaian akademik cemerlang.'
+], '2.581304, 102.474976')">
+  <h3>MRSM Gemencheh</h3>
+  <p>Negeri: Negeri Sembilan</p>
+</div>
+
+  
+<div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Kuala Kubu Bharu', 'Selangor', [
+  'Program IGCSE',
+  'Sejarah: MRSM Kuala Kubu Bharu mula beroperasi sekitar 2002, menyasarkan pelajar cemerlang dalam STEM.',
+  'Kemudahan: Asrama, makmal teknologi & sains, perpustakaan, padang sukan, dewan kuliah.',
+  'Subjek Ditawarkan: Matematik Tambahan, Fizik, Kimia, Biologi, ICT.',
+  'Kehebatan: Prestasi konsisten dalam SPM dan penyertaan aktif dalam kokurikulum.',
+  'Penghargaan: Sekolah Cemerlang MARA Negeri dan cabaran STEM kebangsaan.'
+], '3.548507, 101.673909')">
+  <h3>MRSM Kuala Kubu Bharu</h3>
+  <p>Negeri: Selangor</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Gerik', 'Perak', [
+  'Program Premier',
+  'Sejarah: MRSM Gerik ditubuhkan pada 1994, menjadikan pendidikan sains lebih dekat kepada komuniti Hulu Perak.',
+  'Kemudahan: Asrama, makmal sains & komputer, perpustakaan, dewan kuliah, padang sukan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Fizik, Kimia, Biologi, ICT.',
+  'Kehebatan: Konsisten cemerlang akademik dan penyertaan aktif dalam kokurikulum serta inovasi.',
+  'Penghargaan: Sekolah Berprestasi Tinggi dan pemenang pertandingan STEM kebangsaan.'
+], '5.383755, 101.052885')">
+  <h3>MRSM Gerik</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Kota Kinabalu', 'Sabah', [
+  'Program IGCSE',
+  'Sejarah: MRSM Kota Kinabalu dibuka sebagai salah satu MRSM di Sabah, berlatar belakang pembangunan pendidikan bumiputera.',
+  'Kemudahan: Asrama, makmal sains dan komputer, perpustakaan, dewan kuliah, padang sukan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, Bahasa Inggeris, ICT.',
+  'Kehebatan: Pelajar cemerlang akademik serta penyertaan aktif dalam sukan & inovasi.',
+  'Penghargaan: Sekolah Cemerlang MARA negeri & kebangsaan.'
+], '5.801117, 116.012743')">
+  <h3>MRSM Kota Kinabalu</h3>
+  <p>Negeri: Sabah</p>
+</div>
+
+  
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Tun Mustapha', 'Sabah', [
+  'Program Premier',
+  'Sejarah: MRSM Tun Mustapha di Tawau, Sabah merupakan pusat STEM utama di Pantai Timur Sabah.',
+  'Kemudahan: Asrama, makmal sains & komputer, perpustakaan, dewan kuliah, padang sukan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, ICT, Bahasa Inggeris.',
+  'Kehebatan: Prestasi tinggi dalam akademik dan penyertaan kuat dalam kokurikulum luar negeri.',
+  'Penghargaan: Sekolah Cemerlang MARA & pengiktirafan akademik kebangsaan.'
+], '4.267142, 117.948157')">
+  <h3>MRSM Tun Mustapha</h3>
+  <p>Negeri: Sabah</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('Semporna', 'Sabah', [
+  'Program Ulul Albab',
+  'Sejarah: MRSM Semporna ditubuhkan untuk menawarkan pendidikan Ulul Albab bagi pelajar Sabah timur.',
+  'Kemudahan: Kompleks tahfiz, asrama, makmal sains & komputer, kafe, surau & padang sukan.',
+  'Subjek Ditawarkan: Tahfiz Al-Quran, Matematik Tambahan, Sains, Bahasa Arab, ICT.',
+  'Kehebatan: Menonjol dalam hafazan al-Quran dan akademik STEM.',
+  'Penghargaan: Sekolah Berprestasi Tinggi MARA dan pencapaian hafazan terbaik negeri.'
+], '4.42774° N, 118.54404° E')">
+  <h3>MRSM Semporna</h3>
+  <p>Negeri: Sabah</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Kuching', 'Sarawak', [
+  'Program IGCSE',
+  'Sejarah: MRSM Kuching merupakan antara MRSM pertama di Sarawak dan pusat pendidikan STEM utama di negeri tersebut.',
+  'Kemudahan: Asrama, makmal sains & komputer, perpustakaan, dewan kuliah, padang sukan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, ICT, Bahasa Inggeris.',
+  'Kehebatan: Cemerlang akademik dan pelajar aktif dalam inovasi & sukan negeri.',
+  'Penghargaan: Sekolah Cemerlang MARA negeri & prestasi akademik kebangsaan.'
+], '1.619917, 110.342877')">
+  <h3>MRSM Kuching</h3>
+  <p>Negeri: Sarawak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Kuala Terengganu', 'Terengganu', [
+  'Program Premier',
+  'Sejarah: Ditubuhkan sebagai MRSM elit di pantai timur sejak tahun 2003.',
+  'Kemudahan: Asrama moden, makmal ICT, pusat media interaktif, kompleks sukan lengkap.',
+  'Subjek Ditawarkan: Matematik Tambahan, Fizik, Kimia, Biologi, Prinsip Perakaunan.',
+  'Kehebatan: Aktif dalam pentadbiran pelajar dan penyertaan pertandingan antarabangsa.',
+  'Penghargaan: Johan Kuiz Sains Kebangsaan, Anugerah Inovasi Pendidikan MARA.'
+], '5.418874,103.058377')">
+  <h3>MRSM Kuala Terengganu</h3>
+  <p>Negeri: Terengganu</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Muar', 'Johor', [
+  'Program Premier',
+  'Sejarah: Antara MRSM tertua di Johor, menjadi pusat kecemerlangan akademik dan ko-kurikulum.',
+  'Kemudahan: Makmal Sains dan Komputer, perpustakaan digital, padang bola dan gelanggang futsal.',
+  'Subjek Ditawarkan: Fizik, Kimia, Biologi, Sejarah, Matematik Tambahan.',
+  'Kehebatan: Kejayaan sukan dan penyertaan aktif dalam pertandingan rekacipta.',
+  'Penghargaan: Anugerah Sekolah Harapan MARA dan Pemenang Inovasi Pelajar Peringkat Negeri.'
+], '2.039656,102.652955')">
+  <h3>MRSM Muar</h3>
+  <p>Negeri: Johor</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Kuala Krai', 'Kelantan', [
+  'Program Premier',
+  'Sejarah: Menjadi pemangkin pembangunan pendidikan luar bandar di Kelantan sejak 2005.',
+  'Kemudahan: Bilik kuliah, makmal ICT, dewan kuliah, pusat ko-kurikulum dan kawasan rekreasi.',
+  'Subjek Ditawarkan: Sains Komputer, Fizik, Kimia, Matematik Tambahan, Ekonomi Asas.',
+  'Kehebatan: Melahirkan pelajar cemerlang PT3 & SPM; penyertaan pelajar dalam debat dan forum.',
+  'Penghargaan: Pemenang Anugerah Kualiti MARA & Sekolah Cemerlang Daerah.'
+], '5.503018,102.216672')">
+  <h3>MRSM Kuala Krai</h3>
+  <p>Negeri: Kelantan</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Pasir Salak', 'Perak', [
+  'Program Premier',
+  'Sejarah: Menjadi pusat pengajian MARA utama di kawasan tengah Perak.',
+  'Kemudahan: Asrama pelajar, makmal komputer dan sains, bilik muzik, surau besar.',
+  'Subjek Ditawarkan: Kimia, Sejarah, Biologi, Matematik, Sains Komputer.',
+  'Kehebatan: Aktif dalam bidang sukan ragbi dan pidato serta rekacipta produk pelajar.',
+  'Penghargaan: Finalis Anugerah Inovasi MARA, Johan Pidato Peringkat Kebangsaan.'
+], '4.203632,100.961198')">
+  <h3>MRSM Pasir Salak</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Mukah', 'Sarawak', [
+  'Program Premier',
+  'Sejarah: MRSM Mukah diwujudkan bagi memperluas capaian pendidikan MARA di kawasan tengah Sarawak.',
+  'Kemudahan: Asrama, makmal sains, bengkel teknologi, dewan besar, bilik muzik.',
+  'Subjek Ditawarkan: Sains, Matematik Tambahan, Teknologi Kejuruteraan, Bahasa Inggeris.',
+  'Kehebatan: Aktif dalam inovasi pelajar dan penyertaan pertandingan peringkat negeri.',
+  'Penghargaan: Finalis Anugerah Inovasi Pendidikan MARA.'
+], '2.885695, 112.074376')">
+  <h3>MRSM Mukah</h3>
+  <p>Negeri: Sarawak</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Jeli', 'Kelantan', [
+  'Program Premier',
+  'Sejarah: MRSM Jeli dibina untuk menyediakan pendidikan berkualiti di kawasan pedalaman Kelantan.',
+  'Kemudahan: Makmal komputer, pusat sumber, dewan makan, padang sukan dan surau besar.',
+  'Subjek Ditawarkan: Matematik Tambahan, Fizik, Kimia, Biologi, Pendidikan Islam.',
+  'Kehebatan: Cemerlang dalam SPM dan sukan padang.',
+  'Penghargaan: Sekolah Harapan MARA 2021.'
+], '5.749227, 101.859402')">
+  <h3>MRSM Jeli</h3>
+  <p>Negeri: Kelantan</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('Kota Putra', 'Terengganu', [
+  'Program Ulul Albab',
+  'Sejarah: MRSM Kota Putra merupakan MRSM terbaru di Terengganu dengan fokus kepada pembangunan digital pelajar.',
+  'Kemudahan: Makmal teknologi, ruang pembelajaran digital, surau, asrama berkapasiti tinggi.',
+  'Subjek Ditawarkan: ICT, Sains Komputer, Matematik Tambahan.',
+  'Kehebatan: Pusat rujukan ICT pelajar MARA di pantai timur.',
+  'Penghargaan: Anugerah MRSM Digital MARA 2023.'
+], '5.803724, 102.588316')">
+  <h3>MRSM Kota Putra</h3>
+  <p>Negeri: Terengganu</p>
+</div>
+
+ <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Baling', 'Kedah', [
+  'Program Premier',
+  'Sejarah: MRSM Baling ditubuhkan untuk menyediakan pendidikan berkualiti kepada pelajar luar bandar Kedah.',
+  'Kemudahan: Surau besar, makmal ICT, dewan terbuka, padang serbaguna, asrama selesa.',
+  'Subjek Ditawarkan: Fizik, Biologi, Kimia, Matematik Tambahan.',
+  'Kehebatan: Pelajar aktif dalam ko-akademik dan sukan negeri.',
+  'Penghargaan: Anugerah Pembangunan Pendidikan Desa 2023.'
+], '5.637863, 100.904553')">
+  <h3>MRSM Baling</h3>
+  <p>Negeri: Kedah</p>
+</div>
+
+  
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Pengkalan Hulu', 'Perak', [
+  'Program Premier',
+  'Sejarah: MRSM Pengkalan Hulu terletak berhampiran sempadan Thailand dan memainkan peranan dalam membangunkan kawasan utara Perak.',
+  'Kemudahan: Asrama moden, makmal fizik & ICT, surau, dewan tertutup.',
+  'Subjek Ditawarkan: Sains Tulen, ICT, Bahasa Arab.',
+  'Kehebatan: Aktif dalam program dwibahasa dan pertukaran budaya.',
+  'Penghargaan: Anugerah Integrasi Budaya MARA 2021.'
+], '5.717676, 100.988698')">
+  <h3>MRSM Pengkalan Hulu</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Parit', 'Perak', [
+  'Program IGCSE',
+  'Sejarah: MRSM Parit ditubuhkan untuk memperkasa pendidikan luar bandar dan menjadi hub akademik kawasan tengah Perak.',
+  'Kemudahan: Dewan besar, makmal sains lengkap, asrama, pusat teknologi maklumat.',
+  'Subjek Ditawarkan: Fizik, Kimia, Matematik Tambahan, ICT.',
+  'Kehebatan: Konsisten dalam pencapaian akademik dan aktiviti STEM peringkat negeri.',
+  'Penghargaan: Anugerah Sekolah Berinovasi MARA 2021.'
+], '4.485131, 100.917143')">
+  <h3>MRSM Parit</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Ranau', 'Sabah', [
+  'Program Premier',
+  'Sejarah: MRSM Ranau ditubuhkan untuk memperluas pendidikan berkualiti ke kawasan pedalaman Sabah.',
+  'Kemudahan: Makmal sains, asrama moden, dewan serbaguna, pusat ICT.',
+  'Subjek Ditawarkan: Fizik, Kimia, Biologi, Matematik Tambahan, ICT.',
+  'Kehebatan: Penglibatan pelajar dalam pemuliharaan alam sekitar dan inovasi komuniti.',
+  'Penghargaan: Anugerah Inovasi Hijau MARA Sabah 2023.'
+], '5.99394° N, 116.68252° E')">
+  <h3>MRSM Ranau</h3>
+  <p>Negeri: Sabah</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Bintulu', 'Sarawak', [
+  'Program Premier',
+  'Sejarah: MRSM Bintulu menjadi pemangkin utama pendidikan sains di kawasan tengah Sarawak.',
+  'Kemudahan: Pusat STEM, perpustakaan pintar, makmal ICT, asrama pelajar.',
+  'Subjek Ditawarkan: Biologi, Kimia, Fizik, Sains Komputer, Matematik Tambahan.',
+  'Kehebatan: Cemerlang dalam pertandingan reka cipta dan STEM antarabangsa.',
+  'Penghargaan: Sekolah Inovasi MARA Sarawak 2022.'
+], '3.13865° N, 113.06175° E')">
+  <h3>MRSM Bintulu</h3>
+  <p>Negeri: Sarawak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Betong', 'Sarawak', [
+  'Program Premier',
+  'Sejarah: MRSM Betong ditubuhkan untuk mendekatkan pendidikan sains kepada komuniti luar bandar Sarawak.',
+  'Kemudahan: Dewan terbuka, makmal sains, perpustakaan, asrama selesa.',
+  'Subjek Ditawarkan: Sains Tulen, ICT, Bahasa Arab, Matematik Tambahan.',
+  'Kehebatan: Pelajar aktif dalam program komuniti dan pendidikan luar bandar.',
+  'Penghargaan: Anugerah Pendidikan Luar Bandar MARA 2021.'
+], '1.372588, 111.578399')">
+  <h3>MRSM Betong</h3>
+  <p>Negeri: Sarawak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Tun Fuad Stephens', 'Sabah', [
+  'Program Premier',
+  'Sejarah: MRSM Tun Fuad Stephens dinamakan sempena pemimpin Sabah dan ditubuhkan untuk menggalakkan pendidikan STEM.',
+  'Kemudahan: Makmal sains, dewan serbaguna, asrama, pusat aktiviti pelajar.',
+  'Subjek Ditawarkan: Kimia, Fizik, Biologi, ICT, Bahasa Arab.',
+  'Kehebatan: Aktif dalam forum pelajar Borneo dan inovasi pelajar Sabah.',
+  'Penghargaan: Anugerah Kecemerlangan Akademik MARA Sabah 2023.'
+], '5.909189, 117.998199')">
+  <h3>MRSM Tun Fuad Stephens</h3>
+  <p>Negeri: Sabah</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Lenggong', 'Perak', [
+  'Program Premier',
+  'Sejarah: MRSM Lenggong dibuka untuk memperluaskan akses pendidikan berkualiti di kawasan utara Perak.',
+  'Kemudahan: Dewan terbuka, makmal komputer, makmal sains, padang sukan, perpustakaan.',
+  'Subjek Ditawarkan: Fizik, Kimia, ICT, Sains Komputer, Matematik Tambahan.',
+  'Kehebatan: Dikenali dalam inovasi pelajar dan pertandingan STEM peringkat kebangsaan.',
+  'Penghargaan: Anugerah Sekolah Inovatif MARA 2022.'
+], '5.034610, 100.952571')">
+  <h3>MRSM Lenggong</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Felda Trolak', 'Perak', [
+  'Program Premier',
+  'Sejarah: MRSM Felda Trolak ditubuhkan khas untuk anak-anak peneroka FELDA di Perak.',
+  'Kemudahan: Asrama, dewan makan, makmal sains, surau, padang bola.',
+  'Subjek Ditawarkan: Sains Tulen, ICT, Matematik Tambahan, Bahasa Arab.',
+  'Kehebatan: Aktif dalam program pembangunan komuniti FELDA dan inovasi pelajar luar bandar.',
+  'Penghargaan: Anugerah Sekolah Komuniti MARA 2021.'
+], '3.921949, 101.345967')">
+  <h3>MRSM Felda Trolak</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+<div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Tumpat', 'Kelantan', [
+  'Program IGCSE',
+  'Sejarah: Ditubuhkan bagi memperluas peluang pendidikan berkualiti di Pantai Timur.',
+  'Kemudahan: Asrama, makmal komputer, padang sukan, surau, perpustakaan.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains, ICT, Bahasa Inggeris.',
+  'Kehebatan: Pencapaian cemerlang dalam akademik dan penglibatan aktif kokurikulum.',
+  'Penghargaan: Anugerah Sekolah Kluster MARA.'
+], '6.218966, 102.119362')">
+  <h3>MRSM Tumpat</h3>
+  <p>Negeri: Kelantan</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Serting', 'Negeri Sembilan', [
+  'Program Premier',
+  'Sejarah: Antara MRSM tertua di Negeri Sembilan, menjadi pusat kecemerlangan luar bandar.',
+  'Kemudahan: Asrama, makmal ICT, surau, dewan besar, padang serbaguna.',
+  'Subjek Ditawarkan: Sains, Matematik Tambahan, Prinsip Perakaunan, Bahasa Arab.',
+  'Kehebatan: Pelajar aktif dalam debat dan rekacipta peringkat kebangsaan.',
+  'Penghargaan: MARA Best Performing School Award.'
+], '2.905721, 102.401021')">
+  <h3>MRSM Serting</h3>
+  <p>Negeri: Negeri Sembilan</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Arau', 'Perlis', [
+  'Program Premier',
+  'Sejarah: MRSM utama di Perlis yang menyokong pembangunan pendidikan negeri kecil.',
+  'Kemudahan: Asrama lengkap, makmal moden, perpustakaan digital.',
+  'Subjek Ditawarkan: Fizik, Kimia, Biologi, ICT, Bahasa Inggeris.',
+  'Kehebatan: Pemenang inovasi pelajar peringkat antarabangsa.',
+  'Penghargaan: Sekolah Inovasi MARA dan finalis Anugerah STEM.'
+], '6.453018, 100.347270')">
+  <h3>MRSM Arau</h3>
+  <p>Negeri: Perlis</p>
+</div>
+
+<div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Johor Bahru', 'Johor', [
+  'Program IGCSE',
+  'Sejarah: MRSM yang strategik di kawasan bandar utama selatan semenanjung.',
+  'Kemudahan: Kompleks akademik moden, pusat ICT, kemudahan sukan dalaman.',
+  'Subjek Ditawarkan: Sains, Matematik Tambahan, Ekonomi, Bahasa Jepun.',
+  'Kehebatan: Kejayaan dalam pertandingan sains antarabangsa.',
+  'Penghargaan: Anugerah Inovasi MARA dan Pusat Kecemerlangan STEM.'
+], '1.519912, 103.891607')">
+  <h3>MRSM Johor Bahru</h3>
+  <p>Negeri: Johor</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Mersing', 'Johor', [
+  'Program Premier',
+  'Sejarah: MRSM pesisiran pantai yang memperkukuh pendidikan kawasan luar bandar Johor.',
+  'Kemudahan: Asrama, makmal sains, perpustakaan, dewan makan besar.',
+  'Subjek Ditawarkan: Kimia, Fizik, Biologi, Sejarah, Matematik Tambahan.',
+  'Kehebatan: Juara kuiz STEM kebangsaan, pelajar aktif dalam pengucapan awam.',
+  'Penghargaan: MRSM Cemerlang Luar Bandar (2019).'
+], '2.388573, 103.842091')">
+  <h3>MRSM Mersing</h3>
+  <p>Negeri: Johor</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Batu Pahat', 'Johor', [
+  'Program Premier',
+  'Sejarah: MRSM yang terletak di kawasan pertumbuhan pesat pendidikan di selatan.',
+  'Kemudahan: Asrama selesa, kemudahan sukan lengkap, pusat pembelajaran pintar.',
+  'Subjek Ditawarkan: Prinsip Akaun, Sains Komputer, Sains, Matematik.',
+  'Kehebatan: Pelajar aktif dalam robotik dan forum antarabangsa.',
+  'Penghargaan: MARA Global Exposure Program & MRSM Bitara Akademik Johor.'
+], '1.919655, 102.864259')">
+  <h3>MRSM Batu Pahat</h3>
+  <p>Negeri: Johor</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Merbok', 'Kedah', [
+  'Program Premier',
+  'Sejarah: MRSM Merbok ditubuhkan untuk menyokong pembangunan pendidikan di kawasan utara Semenanjung Malaysia.',
+  'Kemudahan: Asrama selesa, makmal sains, studio seni, pusat sumber, padang bola sepak.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Komputer, Reka Bentuk Teknologi, Bahasa Inggeris.',
+  'Kehebatan: Aktif dalam inovasi pelajar dan pertukaran budaya antarabangsa.',
+  'Penghargaan: Anugerah Kecemerlangan Pelajar MARA 2022.'
+], '5.702996, 100.434996')">
+  <h3>MRSM Merbok</h3>
+  <p>Negeri: Kedah</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('Bagan Datuk', 'Perak', [
+  'Program Ulul Albab',
+  'Sejarah: MRSM Bagan Datuk merupakan antara MRSM baru yang diwujudkan di Perak bagi memperluas akses pendidikan berkualiti di kawasan luar bandar.',
+  'Kemudahan: Bilik pembelajaran digital, dewan besar, pusat kokurikulum, makmal sains dan komputer.',
+  'Subjek Ditawarkan: Sains Tulen, Reka Bentuk Teknologi, Bahasa Arab, ICT.',
+  'Kehebatan: Pemenang pertandingan teknologi hijau peringkat negeri.',
+  'Penghargaan: MARA Green School Recognition 2023.'
+], '3.96711° N, 100.78643° E')">
+  <h3>MRSM Bagan Datuk</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('Sungai Besar', 'Selangor', [
+  'Program Ulul Albab',
+  'Sejarah: MRSM Sungai Besar berperanan penting dalam memperkukuh kecemerlangan akademik di bahagian utara Selangor.',
+  'Kemudahan: Perpustakaan digital, makmal fizik dan kimia, gelanggang sukan, surau besar.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Komputer, Pendidikan Islam, Bahasa Inggeris.',
+  'Kehebatan: Cemerlang dalam debat, pidato dan inovasi remaja.',
+  'Penghargaan: Johan Pidato Pelajar MARA 2023 & Anugerah Sekolah Terbaik Selangor.'
+], '3.708642, 101.132303')">
+  <h3>MRSM Sungai Besar</h3>
+  <p>Negeri: Selangor</p>
+</div>
+
+  
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Pendang', 'Kedah', [
+  'Program Premier',
+  'Sejarah: MRSM Pendang ditubuhkan bagi memperkasa pendidikan luar bandar di kawasan tengah Kedah.',
+  'Kemudahan: Makmal moden, gelanggang serbaguna, perpustakaan, pusat sumber, bilik inovasi.',
+  'Subjek Ditawarkan: Matematik Tambahan, Sains Tulen, RBT, Bahasa Arab Komunikasi.',
+  'Kehebatan: Juara inovasi peringkat negeri dan aktif dalam ko-kurikulum sukan.',
+  'Penghargaan: Anugerah Inovasi Pendidikan MARA 2022.'
+], '5.946085, 100.478383')">
+  <h3>MRSM Pendang</h3>
+  <p>Negeri: Kedah</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Transkrian', 'Perak', [
+  'Program Premier',
+  'Sejarah: MRSM Transkrian terletak berhampiran sempadan Pulau Pinang dan Perak, menawarkan akses pendidikan kepada komuniti sempadan.',
+  'Kemudahan: Dewan serbaguna, makmal fizik dan biologi, bilik mesyuarat digital, surau utama.',
+  'Subjek Ditawarkan: Sains Komputer, Fizik, Matematik Tambahan, Bahasa Inggeris.',
+  'Kehebatan: Cemerlang dalam e-Sukan dan penyelidikan pelajar pra-universiti.',
+  'Penghargaan: Finalis Pertandingan Reka Cipta MARA Zon Utara.'
+], '5.154467, 100.481231')">
+  <h3>MRSM Transkrian</h3>
+  <p>Negeri: Perak</p>
+</div>
+
+<div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Kubang Pasu', 'Kedah', [
+  'Program IGCSE',
+  'Sejarah: MRSM Kubang Pasu ditubuhkan sebagai salah satu inisiatif untuk membangunkan potensi pelajar luar bandar di utara Kedah.',
+  'Kemudahan: Padang bola sintetik, perpustakaan multimedia, makmal komputer, kantin terbuka.',
+  'Subjek Ditawarkan: Reka Bentuk Teknologi, Kimia, Pendidikan Islam, ICT.',
+  'Kehebatan: Pelajar aktif dalam inovasi sains dan kokurikulum negeri.',
+  'Penghargaan: MARA STEM Challenge Champion 2023.'
+], '6.300038, 100.412831')">
+  <h3>MRSM Kubang Pasu</h3>
+  <p>Negeri: Kedah</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('PDRM', 'Kedah', [
+  'Program Premier (Kerjasama MARA & Polis Diraja Malaysia)',
+  'Sejarah: MRSM PDRM merupakan institusi unik hasil kerjasama strategik antara MARA dan PDRM bagi membentuk pelajar berdisiplin tinggi dan berintegriti.',
+  'Kemudahan: Kem latihan, bilik siasatan simulasi, pusat komputer, makmal forensik asas.',
+  'Subjek Ditawarkan: Kriminologi Asas, Pendidikan Sivik, Sains, Bahasa Melayu, ICT.',
+  'Kehebatan: Pelajar sering terlibat dalam latihan kepolisan, debat dan forum integriti.',
+  'Penghargaan: Ikon Integriti Pelajar MARA 2024.'
+], '5.333151, 100.535466')">
+  <h3>MRSM PDRM</h3>
+  <p>Negeri:Kedah</p>
+</div>
+
+ <div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('ATM Bera', 'Pahang', [
+  'Program Ulul Albab',
+  'Sejarah: MRSM ATM Bera ditubuhkan hasil kerjasama strategik antara MARA dan Angkatan Tentera Malaysia bagi menyediakan pendidikan berkualiti kepada anak warga ATM dan awam.',
+  'Kemudahan: Asrama moden, padang kawad, makmal sains, pusat ICT, dewan serbaguna, surau dan kafeteria.',
+  'Subjek Ditawarkan: Sains, Matematik Tambahan, Bahasa Inggeris, Sejarah, Teknologi Maklumat, Pendidikan Islam.',
+  'Kehebatan: Disiplin tinggi berasaskan nilai ketenteraan dan akademik, aktif dalam kawad kaki & inovasi STEM.',
+  'Penghargaan: Penerima Anugerah MRSM Inovatif & rekod cemerlang dalam pertandingan robotik dan akademik kebangsaan.'
+], '3.19791° N, 102.47986° E')">
+  <h3>MRSM ATM Bera</h3>
+  <p>Negeri: Pahang</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="IGCSE,Semua Mrsm" onclick="openModal('Kuala Klawang', 'Negeri Sembilan', [
+  'Program IGCSE',
+  'Sejarah: MRSM Kuala Klawang diwujudkan sebagai pusat kecemerlangan pendidikan di kawasan berbukit Negeri Sembilan.',
+  'Kemudahan: Dewan pelajar, makmal komputer, surau besar, taman herba pembelajaran.',
+  'Subjek Ditawarkan: Biologi, Sains Komputer, Bahasa Arab, Pendidikan Islam.',
+  'Kehebatan: Menonjol dalam aktiviti alam sekitar dan debat Bahasa Melayu.',
+  'Penghargaan: Johan Debat MARA Peringkat Negeri 2022.'
+], '2.978145, 102.059421')">
+  <h3>MRSM Kuala Klawang</h3>
+  <p>Negeri: Negeri Sembilan</p>
+</div>
+
+  <div class="mrsm-card" data-jenis="Premier,Semua Mrsm" onclick="openModal('Terendak', 'Melaka', [
+  'Program Premier',
+  'Sejarah: MRSM Terendak ditubuhkan khusus untuk anak-anak anggota tentera dan komuniti setempat di Kem Terendak.',
+  'Kemudahan: Asrama dalam kawasan kem, dewan makan, padang kawad, makmal komputer & sains, perpustakaan mini, gelanggang sukan.',
+  'Subjek Ditawarkan: Sains, Matematik Tambahan, Bahasa Melayu & Inggeris, Sejarah, Geografi, Pendidikan Islam.',
+  'Kehebatan: Aktif dalam kawad kaki, sukan antara sekolah dalam kem, dan pencapaian akademik konsisten.',
+  'Penghargaan: Pengiktirafan khas daripada Angkatan Tentera Malaysia dan MARA atas program disiplin dan kecemerlangan pelajar.'
+], '2.288794, 102.112581')">
+  <h3>MRSM Terendak</h3>
+  <p>Negeri: Melaka</p>
+</div>
+
+<div class="mrsm-card" data-jenis="Ulul Albab,Semua Mrsm" onclick="openModal('Kepala Batas (Ulul Albab)', 'Pulau Pinang', [
+  'Program Ulul Albab',
+  'Sejarah: Sebahagian daripada inisiatif MRSM Ulul Albab MARA, menggabungkan akademik dan hafazan al-Quran sejak tahun 2015.',
+  'Kemudahan: Dewan Huffaz, bilik hafazan, asrama pelajar tahfiz, makmal sains dan ICT serta surau besar.',
+  'Subjek Ditawarkan: Sains Tulen, Matematik Tambahan, Bahasa Arab Tinggi, Hafazan dan Pendidikan Islam.',
+  'Kehebatan: Pelajar berjaya menghafaz 30 juzuk al-Quran sambil mencapai keputusan cemerlang dalam SPM.',
+  'Penghargaan: Tokoh Huffaz MARA, Anugerah Kecemerlangan Ulul Albab Kebangsaan.'
+], '5.519892, 100.471227')">
+  <h3>MRSM Kepala Batas (Ulul Albab)</h3>
+  <p>Negeri: Pulau Pinang</p>
+</div>
+ <<div id="beritaTab" style="display:none;">
+  <h2>Berita Terkini</h2>
+  <ul>
+    <li><strong>6 Ogos 2025:</strong> MRSM Kuala Krai memenangi Anugerah Inovasi STEM Kebangsaan.</li>
+    <li><strong>5 Ogos 2025:</strong> Pelajar MRSM Kepala Batas sertai Program Pertukaran Pelajar ke Jepun.</li>
+    <li><strong>4 Ogos 2025:</strong> MRSM Serting berjaya lahirkan pelajar 12A dalam SPM 2024.</li>
+  </ul>
+</div>
+
+<div id="shoppingTab" style="display:none;">
+  <h2>Kedai MRSMpedia</h2>
+  <div class="shopping-item">
+    <h4>Baju-T MRSMpedia</h4>
+    <p>RM30.00</p>
+    <button>Tambah ke Troli</button>
+  </div>
+  <div class="shopping-item">
+    <h4>Lencana Koleksi MRSM</h4>
+    <p>RM10.00</p>
+    <button>Tambah ke Troli</button>
+  </div>
+  <div class="shopping-item">
+    <h4>Fail Pelajar MRSM</h4>
+    <p>RM5.00</p>
+    <button>Tambah ke Troli</button>
+  </div>
+</div>
+
+  <!-- Script tab control -->
+  <script>
+    function showTab(tabName) {
+      document.getElementById('utamaTab').style.display = 'none';
+      document.getElementById('beritaTab').style.display = 'none';
+      document.getElementById('shoppingTab').style.display = 'none';
+      document.getElementById(tabName).style.display = 'block';
+    }
+
+    window.onload = function() {
+      showTab('utamaTab'); // Papar tab utama dahulu
+    };
+  </script>
+</body>
+
+  <div id="mrsmModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalNegeri"></p>
+      <ul id="modalPrograms"></ul>
+      <iframe id="modalMap" class="map-embed" src="" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script>
+    function filterMRSM() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.mrsm-card');
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    }
+
+    function openModal(nama, negeri, programList, coord) {
+      document.getElementById('modalTitle').innerText = 'MRSM ' + nama;
+      document.getElementById('modalNegeri').innerText = 'Negeri: ' + negeri;
+      const ul = document.getElementById('modalPrograms');
+      ul.innerHTML = '';
+      programList.forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        ul.appendChild(li);
+      });
+      document.getElementById('modalMap').src = 'https://maps.google.com/maps?q=' + coord + '&z=14&output=embed';
+      document.getElementById('mrsmModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('mrsmModal').style.display = 'none';
+    }
+
+    function filterJenis(jenis) {
+      const cards = document.querySelectorAll('.mrsm-card');
+      cards.forEach(card => {
+        const jenisAttr = card.getAttribute('data-jenis');
+        card.style.display = jenisAttr.includes(jenis) ? 'block' : 'none';
+      });
+    }
+  </script>
+ 
+  </script>
